@@ -19,7 +19,7 @@ class ModelCheckpointCallback(tfk.callbacks.Callback):
 		if (epoch + 1) % self.period != 0:
 			return
 
-		filename = f"weights/base/base-{epoch}.h5"
+		filename = f"weights/base/base-{epoch}-{logs.get('val_loss')}.h5"
 		log.info(f"Saving weights to {filename}...")
 
 		base_model = self.model.layers[0]

@@ -44,10 +44,10 @@ def warmup_model(momentum=0.9, **kwargs):
     return model
 
 
-def build_model(baseline_model, dropout=0.7):
+def main_model(dropout=0.7, **kwargs):
+    base_model = _base_model(**kwargs)
     model = tfk.Sequential([
-        baseline_model,
-        #tfk.Model(inputs=mobilenet_model.inputs, outputs=mobilenet_output),
+        base_model,
         tfkl.GlobalAveragePooling2D(),
         tfkl.Dropout(dropout),
         tfkl.Dense(64, activation='relu'),
