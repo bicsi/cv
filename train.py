@@ -20,6 +20,8 @@ def parse_args():
 		'--reset', action='store_true')
 	parser.add_argument(
 		'--checkpoint-period', type=int, default=10)
+	parser.add_argument(
+		'--learning-rate', '-lr' type=float, default=1e-5)
 	return parser.parse_args()
 
 
@@ -39,7 +41,7 @@ def main(args):
 			model = tfk.models.load_model(
 			    "weights/main",
 			    compile=False)
-			log.success("successfully loaded model from weights/main...")
+			log.success("Successfully loaded model from weights/main.")
 		except Exception as ex:
 			log.error("Error loading model from disk.")
 			log.error(ex)
@@ -50,9 +52,11 @@ def main(args):
 		model = models.main_model(load_local=(not args.reset))
 		print(model.summary())
 
+	model = models.freeze_layers(model, until=5)
+
 	log.info("Compiling model...")
 	model.compile(
-    	optimizer=tfk.optimizers.Adam(learning_rate=1e-5), 
+    	optimizer=tfk.optimizers.Adam(learning_rate=args.learning_rate), 
 	    loss=metrics.f1_loss,
 	    metrics=[metrics.precision, metrics.recall, metrics.f1],
 	)

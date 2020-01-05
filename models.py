@@ -47,14 +47,6 @@ def warmup_model(momentum=0.9, **kwargs):
 def main_model(dropout=0.7, **kwargs):
     base_model = _base_model(**kwargs)
 
-    trainable = False
-    for layer in base_model.layers:
-        if "_7" in layer.name:
-            trainable = True
-        layer.trainable = trainable
-        if "BatchNormalization" in str(type(layer)):
-            layer.trainable = True
-
     model = tfk.Sequential([
         base_model,
         tfkl.GlobalAveragePooling2D(),
@@ -66,4 +58,16 @@ def main_model(dropout=0.7, **kwargs):
         tfkl.Dense(1, activation='sigmoid'),
     ])
     return model
+
+
+def freeze_base_model(model, until=7):
+    base_model = model.layers[0]
+
+    trainable = False
+    for layer in base_model.layers:
+        if f"_{start}" in layer.name:
+            trainable = True
+        layer.trainable = trainable
+        if "BatchNormalization" in str(type(layer)):
+            layer.trainable = True
     
