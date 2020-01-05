@@ -19,12 +19,14 @@ class ModelCheckpointCallback(tfk.callbacks.Callback):
 		if (epoch + 1) % self.period != 0:
 			return
 
-		log.info("Saving weights...")
+		filename = f"weights/base/base-{epoch}.h5"
+		log.info(f"Saving weights to {filename}...")
+
 		base_model = self.model.layers[0]
 		trainables = [layer.trainable for layer in base_model.layers]
 		for layer in base_model.layers:
 			layer.trainable = True
-		base_model.save_weights("weights/base/base-{epoch}.h5")
+		base_model.save_weights(filename)
 		for trainable, layer in zip(trainables, base_model.layers):
 			layer.trainable = trainable
 
@@ -37,6 +39,8 @@ def parse_args():
 		'--steps-per-epoch', type=int, default=100)
 	parser.add_argument(
 		'--tiny', action='store_true')
+	parser.add_argument(
+		'--reset', action='store_true')
 	parser.add_argument(
 		'--checkpoint-period', type=int, default=10)
 	return parser.parse_args()
@@ -53,7 +57,7 @@ def main(args):
 	log.success(f"{len(data['names'])} training examples successfully loaded.")
 
 	log.info("Building model...")
-	model = models.warmup_model()
+	model = models.warmup_model(load_local=(not args.reset))
 	print(model.summary())
 
 	log.info("Compiling model...")
