@@ -36,10 +36,10 @@ def main(args):
 	model = None
 	if not args.reset:
 		try:
-			log.info("Loading model...")
 			model = tfk.models.load_model(
 			    "weights/main",
 			    compile=False)
+			log.success("successfully loaded model from weights/main...")
 		except Exception as ex:
 			log.error("Error loading model from disk.")
 			log.error(ex)

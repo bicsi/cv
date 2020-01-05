@@ -18,8 +18,8 @@ def _base_model(alpha=1.0, load_local=True):
         try:
             list_of_files = glob.glob('./weights/base/*.h5')
             latest_file = max(list_of_files, key=os.path.getctime)
-            log.info(f"Loading model from {latest_file}")
             model.load_weights(latest_file)
+            log.success(f"Successfully loaded base model from {latest_file}")
         except Exception as ex:
             log.error("Could not load local weights.")
             log.error(ex.message)
@@ -46,6 +46,15 @@ def warmup_model(momentum=0.9, **kwargs):
 
 def main_model(dropout=0.7, **kwargs):
     base_model = _base_model(**kwargs)
+
+    trainable = False
+    for layer in base_model.layers:
+        if "_7" in layer.name:
+            trainable = True
+        layer.trainable = trainable
+        if "BatchNormalization" in str(type(layer)):
+            layer.trainable = True
+
     model = tfk.Sequential([
         base_model,
         tfkl.GlobalAveragePooling2D(),
