@@ -54,14 +54,14 @@ def build_generators(data, batch_size=32):
         X, y, test_size=0.2, random_state=42)
 
     train_datagen = tfk.preprocessing.image.ImageDataGenerator(
-        rescale=(1. / 255.)
-        #zoom_range=0.1,
-        #rotation_range=10,
-        #width_shift_range=0.1,
-        #height_shift_range=0.1,
-        #horizontal_flip=True,
-        #fill_mode='constant',
-        #cval=0,
+        rescale=(1. / 255.),
+        zoom_range=0.1,
+        rotation_range=10,
+        width_shift_range=0.1,
+        height_shift_range=0.1,
+        horizontal_flip=True,
+        fill_mode='constant',
+        cval=0,
     )
     val_datagen = tfk.preprocessing.image.ImageDataGenerator(
         rescale=(1. / 255.),
